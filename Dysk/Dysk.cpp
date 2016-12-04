@@ -315,6 +315,17 @@ int Dysk::znajdz_w()
 	return wezel;
 }
 
+//wyswietla dane i-wezla o zadanym numerze
+void Dysk::wyswietl_wezel(int nr_w)
+{
+	if (wezly[nr_w].size == 0) cout << "Brak zajetych blokow\n";
+	else {
+		cout << "Blok bezposredni 1: " << wezly[nr_w].blok_bezposredni1 << " sektor\n";
+		if(wezly[nr_w].blok_bezposredni2 != 0) cout << "Blok bezposredni 2: " << wezly[nr_w].blok_bezposredni2 << " sektor\n";
+		if(wezly[nr_w].blok_posredni != 0)cout << "Blok indeksowy: " << wezly[nr_w].blok_posredni << " sektor\n";
+	}
+}
+
 //konstruktor klasy katalog ->OK
 Katalog::Katalog()
 {

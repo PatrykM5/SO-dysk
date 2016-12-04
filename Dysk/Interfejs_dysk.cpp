@@ -61,9 +61,10 @@ void menu() {
 	Dysk d1;
 	int wybor=0;
 	string nazwa,dane;
-	while (wybor != 11) {
+	int temp=0;
+	while (wybor != 12) {
 		cout << "1.Przeprowadz test1\n2.Przeprowadz test2\n3.Przeprowadz test3\n4.Utworz plik\n5.Usun plik\n6.Zapisz dane do pliku\n7.Wyswietl katalog\n"
-			<< "8.Wyswietl plik\n9.Wyswietl dysk znakowo\n10.Wyswietl dysk liczbowo\n11.Zakoncz menu dysku\n";
+			<< "8.Wyswietl plik\n9.Wyswietl dysk znakowo\n10.Wyswietl dysk liczbowo\n11.Wyswietl wezel\n12.Zakoncz menu dysku\n";
 		cin >> wybor;
 		switch (wybor) {
 		case 1: test1(d1); break;
@@ -87,7 +88,10 @@ void menu() {
 			d1.wyswietl_plik(nazwa); break;
 		case 9: d1.wyswietl_dysk_z(); break;
 		case 10: d1.wyswietl_dysk_l(); break;
-		case 11: cout << "Koncze menu dysku\n"; break;
+		case 11: cout << "Podaj numer wezla do wyswietlenia: ";
+			cin >> temp;
+			d1.wyswietl_wezel(temp); break;
+		case 12: cout << "Koncze menu dysku\n"; break;
 		default: cout << "Bledny wybor!\n"; break;
 		}
 	}

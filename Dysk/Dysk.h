@@ -59,4 +59,5 @@ public:
 	void usun_blok_i(int);
 	void utworz_plik(string nazwa);
 	int znajdz_w();
+	void wyswietl_wezel(int);
 };
