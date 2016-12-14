@@ -19,7 +19,7 @@ int bintodec(int bity[8]){
 	return wynik;
 }
 
-//konstruktor klasy dysk ->OK
+//konstruktor klasy dysk
 Dysk::Dysk(){
 	dysk[0] = (char)(255>>1);	//zajety 1 sektor na wektor bitowy 8 z 16B
 	for (int i = 1; i < 8; i++){
@@ -34,7 +34,7 @@ Dysk::Dysk(){
 	}
 }
 
-//wyswietlanie dysku l i z ->OK
+//wyswietlanie dysku l i z
 void Dysk::wyswietl_dysk_l(){
 	int nr_sektora = 0;
 	for (int i = 0; i < DYSK; i++){
@@ -59,7 +59,7 @@ void Dysk::wyswietl_dysk_z(){
 }
 
 
-//dopisywanie danych do pliku/na dysk ->OK
+//dopisywanie danych do pliku/na dysk
 void Dysk::zapisz_plik(string dane,string nazwa_p)
 {
 	string bufor, blad;
@@ -68,7 +68,6 @@ void Dysk::zapisz_plik(string dane,string nazwa_p)
 	bool udane=false;
 	nr_w=katalog1.znajdz_plik(nazwa_p);
 	if (nr_w != -1) {
-		//cout << "Znaleziono plik\n";
 		size = ceil((double)dane.length() / WIELKOSC_S);
 		try {
 			if (size <= wolne_miejsce-1 && size <=18) {
@@ -95,7 +94,7 @@ void Dysk::zapisz_plik(string dane,string nazwa_p)
 	else cout << "Nie znaleziono pliku!\n";
 }
 
-//wyswietla plik znakowo, odczytuje z dysku ->OK
+//wyswietla plik znakowo, odczytuje z dysku
 void Dysk::wyswietl_plik(string nazwa_p)
 {
 	char bufor[WIELKOSC_S];
@@ -105,20 +104,21 @@ void Dysk::wyswietl_plik(string nazwa_p)
 	nr_w = katalog1.znajdz_plik(nazwa_p);
 	size = wezly[nr_w].size;
 	if (nr_w != -1) {
-		//cout << "Znaleziono plik\n";
-		sektor_tekst(wezly[nr_w].blok_bezposredni1,bufor);
-		sektor_tekst(wezly[nr_w].blok_bezposredni2,bufor);
+		if(size>0) sektor_tekst(wezly[nr_w].blok_bezposredni1,bufor);
+		if(size>1) sektor_tekst(wezly[nr_w].blok_bezposredni2,bufor);
 		//obsluzyc blok indeksowy
-		for (int i = 0; i < size - 2; i++) {
-			wynik = (int)dysk[wezly[nr_w].blok_posredni*WIELKOSC_S+i];
-			sektor_tekst(wynik,bufor);
+		if (size > 2) {
+			for (int i = 0; i < size - 2; i++) {
+				wynik = (int)dysk[wezly[nr_w].blok_posredni*WIELKOSC_S + i];
+				sektor_tekst(wynik, bufor);
+			}
 		}
 		cout << endl;
 	}
 	else cout << "Nie znaleziono pliku!\n";
 }
 
-//zwraca sektor dysku na wyjsciu konsoli oraz jako zmienna string ->OK
+//zwraca sektor dysku na wyjsciu konsoli oraz jako zmienna string
 string Dysk::sektor_tekst(int nr_s,char tekst[]) {
 	for (int i = 0; i < WIELKOSC_S; i++) {
 		tekst[i] = dysk[nr_s * WIELKOSC_S + i];
@@ -127,7 +127,7 @@ string Dysk::sektor_tekst(int nr_s,char tekst[]) {
 	return tekst;
 }
 
-//wyswietla katalog w formie tabeli nazwa pliku, nr wezla ->OK
+//wyswietla katalog w formie tabeli nazwa pliku, nr wezla
 void Dysk::wyswietl_katalog()
 {
 	int temp = 0,i=0;
@@ -141,7 +141,7 @@ void Dysk::wyswietl_katalog()
 	}
 }
 
-//znajduje wolny sektor i zmiennia jego dostepnosc ->OK
+//znajduje wolny sektor i zmiennia jego dostepnosc
 int Dysk::znajdz_wolne()
 {
 	string error;
@@ -173,31 +173,26 @@ int Dysk::znajdz_wolne()
 	return blok*8+nr_bitu;
 }
 
-//zwraca ilosc wolnych sektorow ->OK
+//zwraca ilosc wolnych sektorow
 int Dysk::ile_sektorow()
 {
 	return wolne_miejsce;
 }
 
-//zapisuje numery blokow posrednich i bezposrednich ->OK
+//zapisuje numery blokow posrednich i bezposrednich
 bool Dysk::zapisz_blok(int nr_w, int wynik)
 {
 	int temp = 0;
 	if (wezly[nr_w].size < 18) {
 		wezly[nr_w].size++;
-		/*cout << wezly[nr_w].size << "\t";*/
 		if (wezly[nr_w].blok_bezposredni1 == 0) wezly[nr_w].blok_bezposredni1 = wynik;
 		else if (wezly[nr_w].blok_bezposredni2 == 0) wezly[nr_w].blok_bezposredni2 = wynik;
 		else if (wezly[nr_w].blok_posredni == 0) {
 			wezly[nr_w].blok_posredni = wynik;
 			wezly[nr_w].size--;
 			return false;
-			/*wynik = znajdz_wolne();
-			blok_indeksowy(wezly[nr_w].blok_posredni, wezly[nr_w].size, wynik);*/
 		}
 		else {
-			//return false;
-			//tutaj przeszukiwanie bloku
 			blok_indeksowy(wezly[nr_w].blok_posredni, wezly[nr_w].size, wynik);
 		}
 	}
@@ -205,11 +200,10 @@ bool Dysk::zapisz_blok(int nr_w, int wynik)
 	return true;
 }
 
-//obsluga bloku indeksowego i-wezla ->OK
+//obsluga bloku indeksowego i-wezla 
 void Dysk::blok_indeksowy(int nr_s,int size, int wynik) {
 	int temp = (nr_s * WIELKOSC_S) + size - 3;
 	dysk[temp] = (char)wynik;
-	//cout << (int)dysk[temp] << endl;
 }
 
 //usuwa plik z dysku
@@ -236,21 +230,18 @@ void Dysk::skasuj_plik(string nazwa)
 	}
 }
 
-//usuwa dane z sektora zastêpuj¹c zerami oraz zmienia dostepnosc sektora ->OK
+//usuwa dane z sektora zastêpuj¹c zerami oraz zmienia dostepnosc sektora 
 void Dysk::wyczysc_sektor(int nr_s)
 {
 	//zmiana dostepnosci sektora
 	int bity[8] = { 0 };//ok
 	int w_b = 0,bit=0, wynik=0;//ok
 	int temp = nr_s / 8;//temp->w ktorym bajcie dysku jest
-	//cout << "bajt dysku: " << temp << " usuwany sektor: " << nr_s << endl;
 	w_b = (int)dysk[temp];//w_b->pobranie bajta dysku jako int
 	bit = nr_s % 8;//bit->nr bitu ktory ma byc zmieniony
-	//cout << "bajt jako int: " << w_b << "bit do zmiany: " <<bit << endl;
 	dectobin(w_b, bity);//bajt z dysku zamieniny na tablica bitow
 	bity[bit] = 1;
 	wynik=bintodec(bity);//wynik->zamiana tablicy bitow na bajt
-	//cout << "Bajt do zapisania: " << wynik<<endl;
 	dysk[temp] = (char)wynik;
 	//usuwanie danych ze wskazanego sektora
 	for (int i = 0; i < WIELKOSC_S; i++) {
@@ -259,27 +250,23 @@ void Dysk::wyczysc_sektor(int nr_s)
 	wolne_miejsce++;
 }
 
-//usuwa sektory z bloku indeksowego ->OK
+//usuwa sektory z bloku indeksowego
 void Dysk::usun_blok_i(int nr_s)
 {
 	int temp = 0;
-	//cout << "bloki: ";
 	for (int i = 0; i < WIELKOSC_S; i++) {
 		temp = (int)dysk[nr_s*WIELKOSC_S+i];
-		//cout << temp << "\t";
 		//jesli wpis bloku indeksowego nie jest 0 wtedy kasuje sektor
 		if (temp == 0) {
 			break;
-			//cout << "pusty\n";
 		}
 		else {
 			wyczysc_sektor(temp);
 		}
 	}
-	//cout << endl;
 }
 
-//tworzy plik (maksymalnie 32 pliki) o podanej nazwie ->OK
+//tworzy plik (maksymalnie 32 pliki) o podanej nazwie
 void Dysk::utworz_plik(string nazwa)
 {
 	string error;
@@ -326,7 +313,7 @@ void Dysk::wyswietl_wezel(int nr_w)
 	}
 }
 
-//konstruktor klasy katalog ->OK
+//konstruktor klasy katalog 
 Katalog::Katalog()
 {
 	plikow = 0;
@@ -338,14 +325,13 @@ Katalog::~Katalog()
 	plikow = 0;
 }
 
-//usuwanie pliku z katalogu ->OK
+//usuwanie pliku z katalogu 
 int Katalog::usun_plik(string nazwa)
 {
 	int wynik=0;
 	wynik = znajdz_plik(nazwa);
 	if (wynik != -1) {
 		//tutaj usuwanie pliku
-		//cout << "znaleziono plik w: " <<wynik << endl;
 		plikow--;
 		pliki[wynik].nazwa_pliku = "";
 		pliki[wynik].nr_wezla = -1;
@@ -357,7 +343,7 @@ int Katalog::usun_plik(string nazwa)
 	}
 }
 
-//znajduje plik i zwraca nr wezla pliku ->OK
+//znajduje plik i zwraca nr wezla pliku 
 int Katalog::znajdz_plik(string nazwa)
 {
 	int wynik = -1;
@@ -372,7 +358,7 @@ int Katalog::znajdz_plik(string nazwa)
 	return wynik;
 }
 
-//zmienia nazwe pliku w folderze ->OK
+//zmienia nazwe pliku w folderze 
 void Katalog::zmien_nazwe_p(string s_nazwa, string n_nazwa) {
 	int nr_wezla = znajdz_plik(s_nazwa);
 	if(nr_wezla!=-1)
